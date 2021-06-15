@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>Mustafa.Application</AssemblyName>
+    <PackageId>Mustafa.Application</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>Mustafa</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Abp.HangFire.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="Hangfire" Version="1.7.23" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.23" />
+    <PackageReference Include="log4net.ElasticSearch" Version="2.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mustafa.Core\Mustafa.Core.csproj" />
+    <ProjectReference Include="..\Mustafa.EntityFrameworkCore\Mustafa.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>
