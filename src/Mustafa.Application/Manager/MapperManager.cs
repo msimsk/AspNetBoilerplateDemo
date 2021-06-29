@@ -19,7 +19,7 @@ namespace Mustafa.Manager
     {
         public static void DtosToDomain(IMapperConfigurationExpression cfg)
         {
-            // Products
+            //Products
             cfg.CreateMap<Product, CreateProductInput>();
             cfg.CreateMap<Product, GetAllProductInput>();
             cfg.CreateMap<Product, DeleteProductInput>();

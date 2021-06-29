@@ -10,8 +10,8 @@ using Mustafa.EntityFrameworkCore;
 namespace Mustafa.Migrations
 {
     [DbContext(typeof(MustafaDbContext))]
-    [Migration("20210526120031_fullaudet2")]
-    partial class fullaudet2
+    [Migration("20210628121709_newUpdate")]
+    partial class newUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1542,16 +1542,16 @@ namespace Mustafa.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DESCR")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("DESCR");
-
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Descr")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("Descr");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1564,10 +1564,10 @@ namespace Mustafa.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("NAME")
+                    b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("NAME");
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -1581,7 +1581,7 @@ namespace Mustafa.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CATEGORY_ID")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationTime")
@@ -1590,16 +1590,16 @@ namespace Mustafa.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DESCR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("IMG_PATH")
+                    b.Property<string>("Descr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImgPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -1607,38 +1607,38 @@ namespace Mustafa.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<double>("LASTPRICE")
-                        .HasColumnType("float");
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("NAME")
+                    b.Property<double>("LastPrice")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasColumnName("NAME");
+                        .HasColumnName("Name");
 
-                    b.Property<int?>("UNITLINE_ID")
+                    b.Property<int?>("UnitlineId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CATEGORY_ID");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("UNITLINE_ID");
+                    b.HasIndex("UnitlineId");
 
                     b.ToTable("Product");
                 });
 
             modelBuilder.Entity("Mustafa.Domain.Entities.StockMove", b =>
                 {
-                    b.Property<string>("DESCR")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("DESCR");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -1652,8 +1652,10 @@ namespace Mustafa.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Descr")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("Descr");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1666,33 +1668,33 @@ namespace Mustafa.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("PRODUCT_ID")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<double>("QUANNTITY")
+                    b.Property<double>("Quantity")
                         .HasColumnType("float");
 
                     b.Property<bool>("StockMoveTypeId")
                         .HasColumnType("bit");
 
-                    b.Property<double>("UNITPRICE")
+                    b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
-                    b.Property<int?>("VENDOR_ID")
+                    b.Property<int?>("VendorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WAREHOUSE_ID")
+                    b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
-                    b.HasKey("DESCR");
+                    b.HasKey("Id");
 
-                    b.HasIndex("PRODUCT_ID");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("StockMoveTypeId");
 
-                    b.HasIndex("VENDOR_ID");
+                    b.HasIndex("VendorId");
 
-                    b.HasIndex("WAREHOUSE_ID");
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("StockMove");
                 });
@@ -1725,14 +1727,14 @@ namespace Mustafa.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DESCR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Descr")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1745,10 +1747,10 @@ namespace Mustafa.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("UNIT_TYPE")
+                    b.Property<string>("UnitType")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("UNIT_TYPE");
+                        .HasColumnName("UnitType");
 
                     b.HasKey("Id");
 
@@ -1768,14 +1770,14 @@ namespace Mustafa.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DESCR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Descr")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1788,12 +1790,12 @@ namespace Mustafa.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("NAME")
+                    b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("NAME");
+                        .HasColumnName("Name");
 
-                    b.Property<string>("VKNO")
+                    b.Property<string>("TaxNo")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1814,14 +1816,14 @@ namespace Mustafa.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DESCR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Descr")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1834,10 +1836,10 @@ namespace Mustafa.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("NAME")
+                    b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
-                        .HasColumnName("NAME");
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -2129,12 +2131,12 @@ namespace Mustafa.Migrations
                 {
                     b.HasOne("Mustafa.Domain.Entities.Category", "Category")
                         .WithMany("GetProducts")
-                        .HasForeignKey("CATEGORY_ID")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Mustafa.Domain.Entities.Unitline", "Unitline")
                         .WithMany("GetProducts")
-                        .HasForeignKey("UNITLINE_ID")
+                        .HasForeignKey("UnitlineId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Category");
@@ -2146,7 +2148,7 @@ namespace Mustafa.Migrations
                 {
                     b.HasOne("Mustafa.Domain.Entities.Product", "Product")
                         .WithMany("GetStockMoves")
-                        .HasForeignKey("PRODUCT_ID")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2158,12 +2160,12 @@ namespace Mustafa.Migrations
 
                     b.HasOne("Mustafa.Domain.Entities.Vendor", "Vendor")
                         .WithMany("GetStockMove")
-                        .HasForeignKey("VENDOR_ID")
+                        .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Mustafa.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany("GetStockMove")
-                        .HasForeignKey("WAREHOUSE_ID")
+                        .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");

@@ -15,38 +15,53 @@ using Abp.Linq.Extensions;
 using Abp.Collections.Extensions;
 using System.Collections.Generic;
 using System;
+using Mustafa.ElasticSearchs;
 
 namespace Mustafa.Domain.Categories
-
-
 {
     [AbpAuthorize(PermissionNames.Category)]
     public class CategoryAppService : AsyncCrudAppService<Category, CategoryFullOutPut, int, GetAllCategoryInput, CreateCategoryInput, UpdateCategoryInput, GetCategoryInput, DeleteCategoryInput>, ICategoryAppService
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private IElasticSearchManager _elasticSearchManager;
         private readonly ICategoryRepository _categoryRepository;
+
         public CategoryAppService(
             ICategoryRepository categoryRepository,
             IUnitOfWorkManager unitOfWorkManager,
+            IElasticSearchManager elasticSearchManager,
             IRepository<Category, int> repository) : base(repository)
         {
             _categoryRepository = categoryRepository;
             _unitOfWorkManager = unitOfWorkManager;
+            _elasticSearchManager = elasticSearchManager;
         }
         [AbpAuthorize(PermissionNames.Category_Create)]
         public override async Task<CategoryFullOutPut> CreateAsync(CreateCategoryInput input)
         {
-
-            var category = new Category()
+            try
             {
-                Name = input.Name,
-                Descr = input.Descr,
-            };
 
-            await _categoryRepository.InsertAsync(category);
-            await _unitOfWorkManager.Current.SaveChangesAsync();
+                //var category = ObjectMapper.Map<Category>(input);
+                var category = new Category()
+                {
+                    Name = input.Name,
+                    Descr = input.Descr
+                    //CreationTime = DateTime.Now,
+                    //CreatorUserId = AbpSession.UserId,
+                    //IsDeleted = false
+                };
 
-            return MapToEntityDto(category);
+                await _categoryRepository.InsertAsync(category);
+                await _unitOfWorkManager.Current.SaveChangesAsync();
+                await _elasticSearchManager.AddOrUpdateIndexAsync<Category, int>(category);
+
+                return MapToEntityDto(category);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException);
+            }
             //return base.CreateAsync(input);
         }
         [AbpAuthorize(PermissionNames.Category_Update)]
@@ -62,6 +77,8 @@ namespace Mustafa.Domain.Categories
 
             await _categoryRepository.UpdateAsync(category);
             await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<Category, int>(category);
+            
             return MapToEntityDto(category);
 
             //return await base.UpdateAsync(input);
@@ -94,6 +111,9 @@ namespace Mustafa.Domain.Categories
             //await _categoryRepository.UpdateAsync(category);
             //await _unitOfWorkManager.Current.SaveChangesAsync();
             await base.DeleteAsync(input);
+            var category = await _categoryRepository.GetAsync(input.Id);
+            await _elasticSearchManager.AddOrUpdateIndexAsync<Category, int>(category);
+
         }
 
         public async Task<List<CategoryFullOutPut>> GetList()

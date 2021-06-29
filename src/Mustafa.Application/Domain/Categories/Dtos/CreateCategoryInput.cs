@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Mustafa.Domain.Categories.Dtos
 {
-    public class CreateCategoryInput : EntityDto<int>
+    [AutoMap(typeof(Category))]
+    public class CreateCategoryInput
     {
         public string Name { get; set; }
         public string Descr { get; set; }

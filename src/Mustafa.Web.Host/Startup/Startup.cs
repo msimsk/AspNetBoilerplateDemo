@@ -23,6 +23,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Hangfire;
+using Mustafa.ElasticSearchs;
 
 namespace Mustafa.Web.Host.Startup
 {
@@ -119,6 +120,9 @@ namespace Mustafa.Web.Host.Startup
                     Type = SecuritySchemeType.ApiKey
                 });
             });
+
+            services.AddScoped<IElasticSearchConfigration, ElasticSearchConfigration>();
+            services.AddScoped<IElasticSearchManager, ElasticSearchManager>();
 
             // Configure Abp and Dependency Injection
             return services.AddAbp<MustafaWebHostModule>(

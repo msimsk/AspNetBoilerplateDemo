@@ -1,5 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace Mustafa.Domain.Entities
         public virtual Category Category { get; set; }
         public int? UnitlineId { get; set; }
         public virtual Unitline Unitline { get; set; }
+        [Ignore]
         public virtual ICollection<StockMove> GetStockMoves { get; set; }
     }
 }

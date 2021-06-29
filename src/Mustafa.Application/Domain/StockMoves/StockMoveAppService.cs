@@ -13,6 +13,7 @@ using Mustafa.Domain.Entities;
 using Mustafa.Domain.Products.Dtos;
 using Mustafa.Domain.StockMoves;
 using Mustafa.Domain.StockMoves.Dtos;
+using Mustafa.ElasticSearchs;
 using Mustafa.EntityFrameworkCore.Repositories;
 using Mustafa.Manager;
 using System;
@@ -29,15 +30,18 @@ namespace MustafaDenemeCore.Domain.StockMoves
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IStockMoveRepository _stockMoveRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IElasticSearchManager _elasticSearchManager;
         public StockMoveAppService(
             IUnitOfWorkManager unitOfWorkManager,
             IStockMoveRepository stockMoveRepository,
             IProductRepository productRepository,
+            IElasticSearchManager elasticSearchManager,
             IRepository<StockMove, Int64> repository) : base(repository)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _stockMoveRepository = stockMoveRepository;
             _productRepository = productRepository;
+            _elasticSearchManager = elasticSearchManager;
         }
 
         [AbpAuthorize(PermissionNames.StockMove_Create)]
@@ -45,6 +49,7 @@ namespace MustafaDenemeCore.Domain.StockMoves
         {
             var stockMove = new StockMove()
             {
+               
                 Descr = input.Descr,
                 UnitPrice = input.UnitPrice,
                 Quantity = input.Quantity,
@@ -54,6 +59,7 @@ namespace MustafaDenemeCore.Domain.StockMoves
                 StockMoveTypeId = input.StockMoveType.Id
             };
 
+            stockMove.Id = await _stockMoveRepository.InsertAndGetIdAsync(stockMove);
             //*** update last price
             if (input.StockMoveType.Id == StockMoveType.Giris) 
             { 
@@ -61,8 +67,8 @@ namespace MustafaDenemeCore.Domain.StockMoves
                 product.LastPrice = input.UnitPrice <= 0 ? product.LastPrice : input.UnitPrice;
                 await _productRepository.UpdateAsync(product);
             }
-            await _stockMoveRepository.InsertAsync(stockMove);
-            await _unitOfWorkManager.Current.SaveChangesAsync();
+            //await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<StockMove, Int64>(stockMove);
 
             return MapToEntityDto(stockMove);
             //return await base.CreateAsync(input);
@@ -88,6 +94,7 @@ namespace MustafaDenemeCore.Domain.StockMoves
             await _productRepository.UpdateAsync(product);
             await _stockMoveRepository.DeleteAsync(stockMove);
             await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<StockMove, Int64>(stockMove);
         }
 
         [AbpAuthorize(PermissionNames.StockMove_Get)]
@@ -135,6 +142,7 @@ namespace MustafaDenemeCore.Domain.StockMoves
 
             await _stockMoveRepository.UpdateAsync(stockMove);
             await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<StockMove, Int64>(stockMove);
 
             return MapToEntityDto(stockMove);
         }

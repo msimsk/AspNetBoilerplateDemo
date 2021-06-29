@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using Mustafa.Helper;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using log4net;
+using Mustafa.ElasticSearchs;
 
 namespace MustafaDenemeCore.Domain
 {
@@ -27,17 +27,18 @@ namespace MustafaDenemeCore.Domain
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IProductRepository _productRepository;
-        private static readonly ILog _log = LogManager.GetLogger(typeof(ProductAppService));
-
+        private readonly IElasticSearchManager _elasticSearchManager;
 
         [System.Obsolete]
         public ProductAppService(
             IUnitOfWorkManager unitOfWorkManager,
             IProductRepository productRepository,
+            IElasticSearchManager elasticSearchManager,
             IRepository<Product, int> repository) : base(repository)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _productRepository = productRepository;
+            _elasticSearchManager = elasticSearchManager;
         }
 
         [AbpAuthorize(PermissionNames.Product_Create)]
@@ -48,13 +49,14 @@ namespace MustafaDenemeCore.Domain
                 Name = input.Name,
                 ImgPath = FileHelper.UploadFileAndGetPath(input.myImg),
                 Descr = input.Descr,
-                LastPrice = (float)input.LastPrice,
+                LastPrice = input.LastPrice == null ? 0 : (float)input.LastPrice,
                 CategoryId = input.Category?.Id,
                 UnitlineId = input.Unitline?.Id
             };
 
             await _productRepository.InsertAsync(product);
             await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<Product, int>(product);
 
             return MapToEntityDto(product);
         }
@@ -71,6 +73,9 @@ namespace MustafaDenemeCore.Domain
             //await _productRepository.UpdateAsync(product);
             //await _unitOfWorkManager.Current.SaveChangesAsync();
             await base.DeleteAsync(input);
+            var product = await _productRepository.GetAsync(input.Id);
+            await _elasticSearchManager.AddOrUpdateIndexAsync<Product, int>(product);
+
         }
 
         [AbpAuthorize(PermissionNames.Product_Get)]
@@ -111,6 +116,7 @@ namespace MustafaDenemeCore.Domain
 
             await _productRepository.UpdateAsync(product);
             await _unitOfWorkManager.Current.SaveChangesAsync();
+            await _elasticSearchManager.AddOrUpdateIndexAsync<Product, int>(product);
 
             return MapToEntityDto(product);
         }
@@ -128,8 +134,6 @@ namespace MustafaDenemeCore.Domain
 
         public async Task<List<ProductFullOutPut>> GetList()
         {
-            _log.Info("kaboomasdasdasdasdasdasdasd!", new ApplicationException("The application exploded"));
-
             var products = await _productRepository.GetAllListAsync(x => x.IsDeleted.Equals(false));
             return ObjectMapper.Map<List<ProductFullOutPut>>(products);
         }
